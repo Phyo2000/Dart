@@ -20,17 +20,24 @@ class Guess {
   late String name;
   late int balance;
   late int earn;
+  late int answer;
   late bool play;
 
-  Guess({required this.name, required this.balance, required this.earn});
+  Guess(
+      {required this.name,
+      required this.balance,
+      required this.earn,
+      required this.answer});
 
-  // String getName() {
-  //   print("Enter your name : ");
-  //   name = stdin.readLineSync()!;
-  //   return name;
-  //}
-
-  void winOrLose() {}
+  void winOrLose() {
+    if (earn == answer) {
+      print("Congrats! You Win!");
+      balance += 2;
+    } else {
+      print("Sorry! Your guess is wrong.");
+      balance -= 2;
+    }
+  }
 }
 
 void main() {
@@ -40,12 +47,6 @@ void main() {
     print("Enter your name : ");
     userName = stdin.readLineSync()!;
   }
-
-  // void checkNumber(int? number) {
-  //   while (number == null || (number.isNegative && number == 0)) {
-  //     numb = number;
-  //   }
-  // }
 
   int checkNumber(bool check) {
     final int max = 9;
@@ -66,13 +67,20 @@ void main() {
 
   int numb = checkNumber(true);
   int guessNumb = checkNumber(false);
-  int answer = Random().nextInt(9) + 1;
+  int ans = Random().nextInt(9) + 1;
 
-  final game1 = Guess(name: userName, balance: numb, earn: guessNumb);
+  final game1 =
+      Guess(name: userName, balance: numb, earn: guessNumb, answer: ans);
 
   print("----------");
   print("Hello ${game1.name}.");
-  print("You have ${game1.balance} dollor(s).");
+  print("You have ${game1.balance} dollar(s).");
   print("You guessed ${game1.earn}.");
-  print("Random Number is $answer.");
+  print("Random Number is ${game1.answer}.");
+
+  game1.winOrLose();
+
+  print("----------");
+  print("Dear ${game1.name}!");
+  print("You have ${game1.balance} dollar(s) now.");
 }
