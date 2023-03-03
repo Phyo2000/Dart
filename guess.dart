@@ -19,6 +19,7 @@ import 'dart:async';
 class Guess {
   late String name;
   late int balance;
+  late int guessNumber;
   late int earn;
   late int answer;
   // late bool play;
@@ -26,23 +27,26 @@ class Guess {
   Guess(
       {required this.name,
       required this.balance,
+      required this.guessNumber,
       required this.earn,
       required this.answer});
 
   void winOrLose() {
-    if (earn == answer) {
-      print("Congrats! You Win!");
-      balance += 2;
-      print("Your balance has been added 2 dollars.");
+    if (guessNumber >= answer - 2 && guessNumber <= answer + 2) {
+      print("-----------------------------------------------");
+      print("CONGRATS! YOU WIN!");
+      balance += earn;
+      print("Your balance has been added ${earn} dollars.");
     } else {
-      print("Sorry! Your guess is wrong.");
-      balance -= 2;
-      print("Your balance has been substracted 2 dollars.");
+      print("-----------------------------------------------");
+      print("SORRY! YOUR GUESS IS WRONG.");
+      balance -= earn;
+      print("Your balance has been substracted ${earn} dollars.");
     }
   }
 }
 
-void main() {
+void main() async {
   String? userName;
   bool checkReq = false;
   int balance1 = 0;
@@ -64,7 +68,7 @@ void main() {
         } while (number == null || number <= 0);
       } else {
         do {
-          print("Enter your disire number (only 1 to 9) : ");
+          print("Enter your desire number (only 1 to 9) : ");
           number = int.tryParse(stdin.readLineSync()!);
         } while (number == null || number <= 0 || number > max);
       }
@@ -77,35 +81,71 @@ void main() {
     } else {
       numb = balance1;
     }
+
+    int bet(int maxforBal) {
+      int? bet1;
+      do {
+        print("Enter your desire balance to bet : ");
+        bet1 = int.tryParse(stdin.readLineSync()!);
+      } while (bet1 == null || bet1 <= 0 || bet1 > maxforBal);
+
+      return bet1;
+    }
+
+    int earn1 = bet(numb);
     int guessNumb = checkNumber(false);
     int ans = Random().nextInt(9) + 1;
 
-    final game1 =
-        Guess(name: userName, balance: numb, earn: guessNumb, answer: ans);
+    final game1 = Guess(
+        name: userName,
+        balance: numb,
+        guessNumber: guessNumb,
+        earn: earn1,
+        answer: ans);
 
-    print("----------");
-    print("Hello ${game1.name}.");
+    print("-----------------------------------------------");
+    await Future.delayed(Duration(seconds: 2));
+    print("Hello ${game1.name}! Welcome to Guessing Game.");
+    await Future.delayed(Duration(seconds: 2));
     print("You have ${game1.balance} dollar(s).");
-    print("You guessed ${game1.earn}.");
-    print("Random Number is ${game1.answer}.");
+    await Future.delayed(Duration(seconds: 2));
+    print("You put ${game1.earn} dollar(s).");
+    await Future.delayed(Duration(seconds: 2));
+    print("You guessed ${game1.guessNumber}.");
+    await Future.delayed(Duration(seconds: 2));
+    print("Random Number is ${game1.answer}. ( Allows +/- 2 )");
+    await Future.delayed(Duration(seconds: 2));
 
     game1.winOrLose();
 
-    print("----------");
+    await Future.delayed(Duration(seconds: 2));
+    print("-----------------------------------------------");
+    await Future.delayed(Duration(seconds: 2));
     print("Dear ${game1.name}!");
+    await Future.delayed(Duration(seconds: 2));
     print("You have ${game1.balance} dollar(s) now.");
+    await Future.delayed(Duration(seconds: 2));
+
     balance1 = game1.balance;
 
-    print("----------");
+    print("-----------------------------------------------");
+    await Future.delayed(Duration(seconds: 5));
+
     print("Do you want to play again? (y/n)");
     String status = stdin.readLineSync()!;
     if (status.toLowerCase() != "y") {
+      await Future.delayed(Duration(seconds: 2));
+      print("-----------------------------------------------");
       print("Thanks for playing game.");
+      print("-----------------------------------------------");
       break;
     }
-    if (game1.balance < 2) {
+    if (game1.balance == 0) {
+      await Future.delayed(Duration(seconds: 3));
+      print("-----------------------------------------------");
       print("Insufficient Balance!");
       print("Thanks for playing game.");
+      print("-----------------------------------------------");
       break;
     }
   }
